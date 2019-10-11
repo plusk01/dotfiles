@@ -1,0 +1,18 @@
+alias ll='ls -lh --color=auto'
+alias l='ls -alh --color=auto'
+alias ..='cd ..'
+alias ...='cd ../..'
+
+# Change prompt color if logged in via SSH
+if [[ -n $SSH_CLIENT ]]; then
+    PCOLOR='01;33m'
+else
+    PCOLOR='01;32m'
+fi
+
+# Make prompt nice
+export GIT_PS1_SHOWDIRTYSTATE=1
+export PS1='\[\033['$PCOLOR'\]\u\[\033[01;34m\] \w\[\033[00;33m\]$(__git_ps1)\[\033[01;32m\] \$\[\033[00m\] '
+
+# Make flags
+export MAKEFLAGS='-j8'
