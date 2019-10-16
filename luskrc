@@ -3,6 +3,10 @@ alias l='ls -alh --color=auto'
 alias ..='cd ..'
 alias ...='cd ../..'
 
+# The one true editor
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
 # Change prompt color if logged in via SSH
 if [[ -n $SSH_CLIENT ]]; then
     PCOLOR='01;33m'
