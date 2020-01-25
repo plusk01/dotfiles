@@ -1,1 +1,23 @@
 source /opt/ros/*/setup.bash
+
+function lastbag {
+  # Given a directory with at least one bag file, find the filename with the
+  # latest timestamp (%Y-%m-%d-%H-%M-%S) in name and open it with `rqt_bag`.
+  # This is particularly useful given a directory of many rosbags that were
+  # created via `rosbag record` without an explicit filename.
+  # If the files were created with `rosbag record -o <name>`, then <name>
+  # will be appended with a timestamp, in which case the latest of *these*
+  # bags can be found with `./lastbag <name>`.
+  #
+  # Parker Lusk
+  # 23 Nov 2019
+
+  BAG=$(find $PWD -maxdepth 1 -type f -name "${1}*.bag" -print | sort -r | head -n1 | tr -d '\n')
+  if [ -z "$BAG" ]
+  then
+    echo -e "\033[31mNo bag found\033[0m"
+    return
+  fi
+  echo -e "Opening \033[33;1m$(basename "${BAG}")\033[0m"
+  rqt_bag $BAG
+}
