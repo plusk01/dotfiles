@@ -2,11 +2,15 @@
 
 # Get path to the directory of this file, no matter where it is sourced from
 MYPATH=$(dirname ${BASH_SOURCE[0]})
+ORIGIN=$(dirname $(readlink -f $0))
 
-cp luskrc ~/.luskrc
+cp luskrc $HOME/.luskrc
+sed -i s~__DOTFILES__~$ORIGIN~g $HOME/.luskrc
 
-# TODO: make sure this line doesn't already exist
-echo "source ~/.luskrc" >> ~/.bashrc
+# Make sure this line doesn't already exist
+if ! grep -Fq ".luskrc" $HOME/.bashrc; then
+  echo "source ~/.luskrc" >> $HOME/.bashrc
+fi
 
 # Install vim plugins
 git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim

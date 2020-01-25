@@ -3,6 +3,9 @@ alias l='ls -alh --color=auto'
 alias ..='cd ..'
 alias ...='cd ../..'
 
+source ~/.rosrc
+source __DOTFILES__/bash_completion_tmux.sh
+
 # The one true editor
 export VISUAL=vim
 export EDITOR="$VISUAL"

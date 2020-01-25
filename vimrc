@@ -185,7 +185,7 @@ au BufRead,BufNewFile .rosrc set syntax=bash
 " YouCompleteMe
 " Mapping to edit ~/.vim/.ycm_extra_conf.py
 nnoremap <leader>ycm :vsplit ~/.vim/.ycm_extra_conf.py<cr>
-let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
+let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
 
 " ===============================================
 " NerdTree
