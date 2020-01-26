@@ -1,0 +1,28 @@
+# This file contains ROS workspace and network profiles. These profiles are
+# persistent. Define your own custom profiles as follows:
+#
+#   For ROS Network Profiles:
+#
+#     function rosnet_private() {
+#       # The ROS network will be private to this local computer only
+#       # args: <name> <master uri> <ros ip>
+#       _rosnet_helper private http://127.0.0.1:11311 127.0.0.1
+#     }
+#
+#   For ROS Workspace Profiles:
+#
+#     function rosws_acl() {
+#       # args: <name> <workspace directory> <rosnet>
+#       # leave <rosnet> empty to use currently selected network profile
+#       _rosws_helper acl "$HOME/acl_ws" ""
+#     }
+#
+#   To view current profile:
+#
+#     $ ros_show
+#
+#   To deselect a persistent workspace profile:
+#
+#     $ rosws_none
+#
+

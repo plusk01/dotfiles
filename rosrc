@@ -1,5 +1,161 @@
 source /opt/ros/*/setup.bash
 
+###############################################################################
+###############################################################################
+######################## ROS Environment Parameters ###########################
+
+# For best results, set this variables (no need to export) just prior to
+# sourcing this script. The syntax used below allows defaults.
+
+# Print a banner of the current ROS configuration during bash initialization
+ROS_SHOW_ON_START=${ROS_SHOW_ON_START:-false}
+
+# Has the ROS environment been initialized?
+ROS_ENV_INITIALIZED=false
+
+########################## ROS Environment Setup ##############################
+
+#
+# Default ROS Networks
+#
+
+function _rosnet_helper() {
+  rosnetwork=$1 # avoid name collision with rosnet
+  master=$2
+  ip=$3
+
+  export ROS_MASTER_URI=$master
+  export ROS_IP=$ip
+
+  _rosenv_get # load current rosws
+  _rosenv_save "$rosnetwork" "$rosws"
+  
+  # Display the current ROS env configuration as an acknowledgment
+  _rosnet_show
+}
+
+function rosnet_private() {
+  # The ROS network will be private to this local computer only
+  _rosnet_helper private http://127.0.0.1:11311 127.0.0.1
+}
+
+function rosnet_local() {
+  # The ROS network will have a master on this computer, but other devices
+  # on the network will be able to communicate with it if they choose to.
+  my_ip=$(ip route get 192.168.0.1 | awk -F"src " 'NR==1{split($2,a," ");print a[1]}')
+  my_interface=$(ip route get 192.168.0.1 | awk -F"dev " 'NR==1{split($2,a," ");print a[1]}')
+
+  _rosnet_helper local http://$my_ip:11311 $my_ip
+}
+
+#
+# Default ROS Workspaces
+#
+
+function _rosws_helper() {
+  rosworkspace=$1 # avoid name collision with rosws
+  wsdir=$2
+  rosnet=$3
+
+  # This function sets the ros ws in a sane way. This function can be called
+  # by custom rosws methods, or it can be used to model a new rosws method
+  # to achieve maximum flexibility.
+  if [ -f $wsdir/devel/setup.bash ]; then
+    source $wsdir/devel/setup.bash
+  fi
+
+  # Saves the selected ROS ws for persistence across shells. If the rosnet
+  # passed in by the user is empty, the current rosnet is preserved.
+  if [ "$rosnet" == "" ]; then
+    _rosenv_get
+  fi
+  _rosenv_save "$rosnet" "$rosworkspace"
+
+  # Display the current ROS env configuration as an acknowledgment
+  _rosws_show $wsdir
+}
+
+function rosws_none() {
+  echo -e "\e[91;1mRestart bash to un-source ROS environment.\e[0m"
+
+  _rosenv_get
+  _rosenv_save "$rosnet" ""
+}
+
+#
+# Environment Persistence
+#
+
+function _rosenv_get() {
+  if [ -f $HOME/.rosenv ]; then
+    source $HOME/.rosenv
+  fi
+}
+
+function _rosenv_load() {
+  _rosenv_get
+
+  # source ROS workspace
+  if [ ! -z "$rosws" ]; then
+    f="rosws_$rosws"
+    $f
+  fi
+
+  # set ROS networking (private by default)
+  if [ ! -z "$rosnet" ]; then
+    f="rosnet_$rosnet"
+  else
+    f="rosnet_private"
+  fi
+  $f
+}
+
+function _rosenv_save() {
+  echo "# $(date)" > $HOME/.rosenv
+  echo "rosnet=$1" >> $HOME/.rosenv
+  echo "rosws=$2" >> $HOME/.rosenv
+}
+
+###############################################################################
+
+# Include custom workspace and network profiles
+if [ -f $HOME/.rosprofiles ]; then
+  source $HOME/.rosprofiles
+fi
+
+###############################################################################
+###############################################################################
+
+function _rosws_show() {
+  if [[ "$ROS_ENV_INITIALIZED" == false && "$ROS_SHOW_ON_START" == false ]]; then
+    return
+  fi
+
+  wsdir=$1
+  echo -e "\e[97mCurrent ROS workspace is \e[94;1m$wsdir\e[0m"
+}
+
+function _rosnet_show() {
+  if [[ "$ROS_ENV_INITIALIZED" == false && "$ROS_SHOW_ON_START" == false ]]; then
+    return
+  fi
+
+  echo -e "\e[97mROS_MASTER_URI=\e[94;1m${ROS_MASTER_URI}\e[0m"
+  echo -e "\e[97mROS_IP=\e[94;1m${ROS_IP}\e[0m"
+}
+
+function ros_show() {
+  # display current ROS profile info
+  
+  # easiest to just reload
+  _rosenv_load
+}
+
+_rosenv_load
+ROS_ENV_INITIALIZED=true
+
+###############################################################################
+
 function lastbag {
   # Given a directory with at least one bag file, find the filename with the
   # latest timestamp (%Y-%m-%d-%H-%M-%S) in name and open it with `rqt_bag`.
