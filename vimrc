@@ -18,7 +18,7 @@ Plugin 'airblade/vim-gitgutter'
 "Plugin 'Raimondi/delimitMate'
 "Plugin 'scrooloose/nerdtree'
 
-Plugin 'vim/killersheep'
+"Plugin 'vim/killersheep'
 
 " Plugins not currently used
 "Plugin 'taketwo/vim-ros'
