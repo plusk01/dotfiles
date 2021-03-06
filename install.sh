@@ -17,14 +17,14 @@ if ! grep -Fq ".luskrc" $HOME/.bashrc; then
 fi
 
 # setup ROS env
-cp rosrc $HOME/.rosrc
-cp rosprofiles $HOME/.rosprofiles
+cp -n rosrc $HOME/.rosrc
+cp -n rosprofiles $HOME/.rosprofiles
 
 # setup tmux
-cp tmux.conf $HOME/.tmux.conf
+cp -n tmux.conf $HOME/.tmux.conf
 
 # copy vimrc
-cp vimrc $HOME/.vimrc
+cp -n vimrc $HOME/.vimrc
 
 # Install lsg tool
 git clone https://github.com/gerph/ls-with-git-status /tmp/lsg
