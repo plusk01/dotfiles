@@ -3,6 +3,8 @@ alias l='ls -alh --color=auto'
 alias ..='cd ..'
 alias ...='cd ../..'
 
+alias llg='lsg -lh'
+
 source ~/.rosrc
 source __DOTFILES__/bash_completion_tmux.sh
 
